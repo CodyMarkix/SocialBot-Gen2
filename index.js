@@ -1,9 +1,11 @@
-// Importing libraries
-const fs = require("fs");
-const path = require("path");
-const express = require('express');
+const Discord = require('discord.js')
+const fs = require('fs');
+const client = new Discord.Client({intents:[Discord.Intents.FLAGS.GUILDS, Discord.Intents.FLAGS.GUILD_MESSAGES]})
+const {Client, Collection, Intents, } = require('discord.js');
+const {token} = require('./config.json')
 const env = require('dotenv');
-const { Client, Collection, Intents } = require('discord.js');
+const express = require('express');
+
 
 // Website backend
 const app = express();
@@ -19,23 +21,26 @@ app.listen(exprport, () => {
     console.log(`Social Bot listening at http://localhost:${exprport}`);
 });
 
-// New Discord Client
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+client.once('ready', async () => {
+    client.user.setPresence({activities: [{name: "Tento bot je v betě! Nahlasujte bugy na Modmail.", type: "PLAYING" }]})
+    console.log('This bot is online')
 
-// When the client is ready, it will console.log.
-client.once('ready', () => {
-	console.log('SocialBot is ready!');
-});
+   
+
+})
+
+
 
 client.commands = new Collection();
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
 for (const file of commandFiles) {
-    const command = require(`./commands/${file}`)
+	const command = require(`./commands/${file}`);
+
     client.commands.set(command.data.name, command);
 }
 
-// Command handler
-client.on('interactionCreate', async interaction => {
+client.once('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
 
 	const command = client.commands.get(interaction.commandName);
@@ -50,5 +55,12 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-// Logging in the bot
-client.login(process.env.TOKEN);
+client.once('messageCreate', async message =>{
+    if(message.author.bot || message.channel.type === 'DM') {
+        return
+    }
+})
+
+
+
+client.login(process.env.TOKEN)

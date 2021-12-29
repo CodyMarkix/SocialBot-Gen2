@@ -1,4 +1,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+/* Animations */
+
+/* Styles */
+
+html {
+    background-image: url('../assets/Background.png');
+    height: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
 
 #title {
     font-family: 'Roboto', sans-serif;
